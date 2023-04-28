@@ -1,7 +1,11 @@
-from flask import Flask
+from flask import Flask, jsonify
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 
-@app.route("/")
+
+@app.route("/api/v1/hello", methods=['get'])
+@cross_origin()
 def hello():
-    return "Hello, World!"
+    response = jsonify(message="Simple server is running")
+    return response
