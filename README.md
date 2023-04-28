@@ -7,30 +7,22 @@ Important thing: The project is only used for the University of Melbourne COMP90
 
 [CodingBunnyi](https://github.com/CodingBunnyi): Yuhan Qian 1244574 [**yuhqian1@student.unimelb.edu.au**](mailto:yuhqian1@student.unimelb.edu.au)<br>
   
-## Run backend
-> Make sure you have python 3.7 or higher correctly installed  
-
-* ### Windows user:
-> 1. Open CMD at the backend folder which include the `requirements.txt` file:<br>
-> `cd backend`
-> 2. Create a python virtual environment at the backend folder:<br>
-> `py -3 -m venv venv`
-> 3. Active the python virtual environment:<br>
-> `venv\Scripts\activate`  
-> 4. Install the required python libraries:<br>
-> `pip install -r requirements.txt`
-> 5. Run backend server:<br>
-> `flask run` 
-
+## Run Application
+> Make sure you have python 3.7 or higher correctly installed
 
 * ### Mac-OS user:
-> 1. Open CMD at the backend folder which include the `requirements.txt` file:<br>
-> `cd backend`
-> 2. Create a python virtual environment at the backend folder: <br>
-> `python3 -m venv venv`
-> 3. Active the python virtual environment:<br>
-> `. venv/bin/activate`
-> 4. Install the required python libraries:<br>
-> `pip install -r requirements.txt`
-> 5. Run backend server:<br>
-> `flask run` 
+1. Create a python virtual environment at the backend folder: <br>
+`python3 -m venv venv`
+2. Active the python virtual environment: <br>
+`. venv/bin/activate`
+3. Use pip to install pipenv: <br>
+`pip install pipenv`
+4. Use pipenv to install all dependency packages: <br>
+`pipenv install`
+5. Change into the pipenv: <br>
+`pipenv shell`
+6. Run flask app: <br>
+`python3 app.py` 
+
+## How to add a new package
+Use `pipenv install <package>` to install a new package. 
