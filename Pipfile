@@ -18,8 +18,8 @@ virtualenv = "==20.23.0"
 virtualenv-clone = "==0.5.7"
 werkzeug = "==2.3.1"
 zipp = "==3.15.0"
-flask = "*"
-flask-cors = "*"
+flask = "2.1.0"
+flask-cors = "3.0.10"
 couchdb = "*"
 
 [dev-packages]

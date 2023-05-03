@@ -1,10 +1,11 @@
 from flask import Flask, g, jsonify
 from flask_cors import CORS
 import couchdb
+import requests
 
 admin = 'admin'
 password = 'comp90024-60'
-url = f'http://{admin}:{password}@172.26.129.169:5984/'
+url = f'http://{admin}:{password}@172.26.136.78:5984/'
 couch = couchdb.Server(url)
 db_name = 'testdb'
 
@@ -22,6 +23,96 @@ def hello():
     response = jsonify(message="Simple server is running")
     return response
 
+
+@app.route("/api/v1/mapdata", methods=['get'])
+def mapdata():
+    db_name = 'twitter-data-with-location'
+    view_name = 'AI/_view/new-view'
+    params = {'reduce': 'true'}
+    response = requests.get(url + db_name + '/_design/' + view_name, params=params)
+    if response.status_code == 200:
+        data = response.json()['rows'][0]['value']
+        return jsonify({'sum': data['sum']})
+    else:
+        return jsonify({'error': 'Failed to retrieve data from database.'})
+
+@app.route("/api/v1/multimapdata", methods=['get'])
+def multimapdata():
+    try:
+        db_name = 'twitter-data-with-location'
+        view_name = 'AI/_view/new-view'
+        params = {'reduce': 'true', 'group_level': '1'}
+        response = requests.get(url + db_name + '/_design/' + view_name, params=params)
+        data = response.json()['rows']
+        features = []
+        for item in data:
+            key = item['key']
+            count = item['value']['count']
+            sumsqr = item['value']['sumsqr']
+
+            if key:
+                key = key.strip()  # 去除首尾空格
+
+            feature = {
+                'type': 'Feature',
+                'nameof': {'key': key},
+                'properties': {'count': count, 'sumsqr': sumsqr}
+            }
+            features.append(feature)
+
+        geojson = {
+            'type': 'FeatureCollection',
+            'features': features
+        }
+
+        return jsonify(geojson)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route("/api/v1/mapreturn", methods=['get'])
+def mapreturn():
+    try:
+        db_name = 'location'
+        view_name = 'Location/_view/extract_lga_info'
+        #params = {'reduce': 'true', 'group_level': '1'}
+        response = requests.get(url + db_name + '/_design/' + view_name)
+        data = response.json()['rows']
+        features = []
+        for item in data:
+            # key = item['key']
+            lon = item['value'][3]['lon']
+            lat = item['value'][3]['lat']
+
+            # if key:
+            #     key = key.strip()  # 去除首尾空格
+
+            feature = {
+                'type': 'Feature',
+                "geometry": {
+                    'type': 'Point',
+                    "coordinates":
+                        [
+                            lon,
+                            lat
+                        ]
+                },
+                'properties': {'count': 0,
+                               'surburb': 1,
+                               "timestamp": 2
+                               }
+            }
+            features.append(feature)
+
+        geojson = {
+            'type': 'FeatureCollection',
+            'features': features
+        }
+
+        return jsonify(geojson)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/v1/docs/<doc_id>', methods=['get'])
 def api_0(doc_id):
