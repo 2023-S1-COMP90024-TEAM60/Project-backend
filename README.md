@@ -12,16 +12,14 @@ Important thing: The project is only used for the University of Melbourne COMP90
 
 * ### Mac-OS user:
 1. Create a python virtual environment at the backend folder: <br>
-`python3 -m venv venv`
-2. Active the python virtual environment: <br>
-`. venv/bin/activate`
-3. Use pip to install pipenv: <br>
-`pip install pipenv`
+`mkdir .venv`
+2. Initiate the virtual environment: <br>
+`pipenv --python 3.10`
+3. Start the virtual environment: <br>
+`pipenv shell`
 4. Use pipenv to install all dependency packages: <br>
 `pipenv install`
-5. Change into the pipenv: <br>
-`pipenv shell`
-6. Run flask app: <br>
+5. Run flask app: <br>
 `python3 app.py` 
 
 ## How to add a new package
