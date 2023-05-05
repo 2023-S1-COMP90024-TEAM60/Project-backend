@@ -2,7 +2,8 @@ from flask import Flask, g, jsonify
 from flask_cors import CORS
 import couchdb
 import requests
-import json
+from itertools import groupby
+
 admin = 'admin'
 password = 'comp90024-60'
 url = f'http://{admin}:{password}@172.26.136.78:5984/'
@@ -114,11 +115,62 @@ def hello():
 #     except Exception as e:
 #         return jsonify({'error': str(e)}), 500
 
+# @app.route("/AI/MAPTEST", methods=['get'])
+# def map_data():
+#     try:
+#         location_db_name = 'location'
+#         location_view_name = 'Location/_view/extract_lga_info'
+#         location_response = requests.get(url + location_db_name + '/_design/' + location_view_name)
+#         location_data = location_response.json()['rows']
+#
+#         time_db_name = 'twitter-data-with-location'
+#         time_view_name = 'AI/_view/ai_loc_time'
+#         time_response = requests.get(url + time_db_name + '/_design/' + time_view_name)
+#         time_data = time_response.json()['rows']
+#
+#         features = []
+#         for timestamp in time_data:
+#             time_key = timestamp['key']
+#             time_value = timestamp['value']
+#             for item in location_data:
+#                 key = item['key']
+#                 suburb_name = item['value'][0]
+#                 lon = item['value'][3]['lon']
+#                 lat = item['value'][3]['lat']
+#
+#                 if time_key == key:
+#                     feature = {
+#                         'type': 'Feature',
+#                         "geometry": {
+#                             'type': 'Point',
+#                             "coordinates":
+#                                 [
+#                                     lon,
+#                                     lat
+#                                 ]
+#                         },
+#                         'properties': {'count': 1,
+#                                        'surburb': suburb_name,
+#                                        "timestamp": time_value
+#                                        }
+#                     }
+#                     features.append(feature)
+#
+#         geojson = {
+#             'type': 'FeatureCollection',
+#             'features': features
+#         }
+#
+#         return jsonify(geojson)
+#
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
 @app.route("/AI/mapData", methods=['get'])
 def map_data():
     try:
-        location_db_name = 'location'
-        location_view_name = 'Location/_view/extract_lga_info'
+        location_db_name = 'lga_info'
+        location_view_name = 'LGA/_view/get_lga_info_geo'
         location_response = requests.get(url + location_db_name + '/_design/' + location_view_name)
         location_data = location_response.json()['rows']
 
@@ -127,33 +179,63 @@ def map_data():
         time_response = requests.get(url + time_db_name + '/_design/' + time_view_name)
         time_data = time_response.json()['rows']
 
-        features = []
-        for timestamp in time_data:
-            time_key = timestamp['key']
-            time_value = timestamp['value']
-            for item in location_data:
-                key = item['key']
-                suburb_name = item['value'][0]
-                lon = item['value'][3]['lon']
-                lat = item['value'][3]['lat']
+        features = (
+            {
+                'type': 'Feature',
+                "geometry": {
+                    'type': 'Point',
+                    "coordinates": [item['value'][3]['lon'], item['value'][3]['lat']]
+                },
+                'properties': {
+                    'count': 1,
+                    'suburb': item['value'][0],
+                    "timestamp": timestamp['value']
+                }
+            }
+            for timestamp in time_data
+            for item in location_data
+            if timestamp['key'] == item['key']
+        )
 
-                if time_key == key:
-                    feature = {
-                        'type': 'Feature',
-                        "geometry": {
-                            'type': 'Point',
-                            "coordinates":
-                                [
-                                    lon,
-                                    lat
-                                ]
-                        },
-                        'properties': {'count': 1,
-                                       'surburb': suburb_name,
-                                       "timestamp": time_value
-                                       }
-                    }
-                    features.append(feature)
+        grouped_features = groupby(features, key=lambda x: (x['properties']['suburb'], x['properties']['timestamp']))
+        grouped_geojson = [{'type': 'FeatureCollection', 'features': list(features)} for _, features in
+                           grouped_features]
+
+        return jsonify(grouped_geojson)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route("/LGA/Happy", methods=['get'])
+def happy():
+    try:
+        location_db_name = 'lga_info'
+        location_view_name = 'LGA/_view/get_lga_info_geo'
+        location_response = requests.get(url + location_db_name + '/_design/' + location_view_name)
+        location_data = location_response.json()['rows']
+
+        # time_db_name = 'twitter-data-with-location'
+        # time_view_name = 'Happy/_view/lga_sentiment'
+        # params = {'Reduce': 'true', 'group_level': '1'}
+        # time_response = requests.get(url + time_db_name + '/_design/' + time_view_name, params)
+        # time_data = time_response.json()['rows']
+
+        features = []
+        for item in location_data:
+            #key = item['key']
+            type = item['value'][4]["geometry"]["type"]
+            coordinates = item['value'][4]["geometry"]["coordinates"]
+
+            feature = {
+                'type': 'Feature',
+                "geometry": {
+                    'type': type,
+                    "coordinates": coordinates
+                },
+
+            }
+            features.append(feature)
 
         geojson = {
             'type': 'FeatureCollection',
@@ -164,7 +246,6 @@ def map_data():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
 
 
 # @app.route('/api/v1/docs/<doc_id>', methods=['get'])
