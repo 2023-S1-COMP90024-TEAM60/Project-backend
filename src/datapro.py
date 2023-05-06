@@ -39,10 +39,13 @@ def ai_loc_time():
     )
 
     grouped_features = groupby(features, key=lambda x: (x['properties']['suburb'], x['properties']['timestamp']))
-    grouped_geojson = [{'type': 'FeatureCollection', 'features': list(features)} for _, features in
-                       grouped_features]
+    grouped_geojson = [list(features) for _, features in grouped_features]
+    return_json = {
+        "type": "FeatureCollection",
+        "features": grouped_geojson
+    }
 
-    return grouped_geojson
+    return return_json
 
 
 
@@ -62,7 +65,7 @@ def happy_lga_time():
                 merged_doc = { **doc1["value"][4],
                                "properties": {
                                     "name": doc1["value"][0],
-                                    **doc2["value"]
+                                    "sentiment": {**doc2["value"]}
                                },
                                }
                 mergelist.append(merged_doc)
