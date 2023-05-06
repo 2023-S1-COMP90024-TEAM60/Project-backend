@@ -1,7 +1,7 @@
 import requests
 import couchdb
-import json
-from itertools import groupby
+# import json
+# from itertools import groupby
 
 admin = 'admin'
 password = 'comp90024-60'
@@ -62,7 +62,7 @@ def happy_lga_time():
     mergelist = []
     for doc1 in docs1:
         doc_id = doc1["key"]
-        doc_value = doc1["value"]
+        #doc_value = doc1["value"]
         for doc2 in docs2:
             if doc2["key"] == doc_id:
                 merged_doc = { **doc1["value"][4],

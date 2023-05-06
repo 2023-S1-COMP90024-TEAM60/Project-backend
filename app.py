@@ -26,18 +26,37 @@ def hello():
 
 @app.route("/AI/mapData", methods=['get'])
 def map_data():
-    processed_data = ai_loc_time()
-    return jsonify(processed_data)
+    global global_mapdata
+    if global_mapdata is None:
+        global_mapdata = ai_loc_time()
+    return jsonify(global_mapdata)
 
 
 @app.route("/LGA/Happy", methods=['get'])
 def happy():
-    processed_data = happy_lga_time()
-    return jsonify(processed_data)
+    global global_happylga
+    if global_happylga is None:
+        global_happylga = happy_lga_time()
+    return jsonify(global_happylga)
 
 
+def compute_data():
+    global global_happylga, global_mapdata
+    global_mapdata = ai_loc_time()
+    global_happylga = happy_lga_time()
 
 
+# @app.route("/AI/mapData", methods=['get'])
+# def map_data():
+#     processed_data = ai_loc_time()
+#     return jsonify(processed_data)
+
+
+# @app.route("/LGA/Happy", methods=['get'])
+# def happy():
+#     processed_data = happy_lga_time()
+#     return jsonify(processed_data)
 
 if __name__ == "__main__":
+    compute_data()
     app.run(port=8000)
