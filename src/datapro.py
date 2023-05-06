@@ -19,36 +19,39 @@ def ai_loc_time():
     time_view_name = 'AI/_view/ai_loc_time'
     time_response = requests.get(url + time_db_name + '/_design/' + time_view_name)
     time_data = time_response.json()['rows']
+    features = []
+    for timestamp in time_data:
+        time_key = timestamp['key']
+        time_value = timestamp['value']
+        for item in location_data:
+            key = item['key']
+            suburb_name = item['value'][0]
+            lon = item['value'][3]['lon']
+            lat = item['value'][3]['lat']
 
-    features = (
-        {
-            'type': 'Feature',
-            "geometry": {
-                'type': 'Point',
-                "coordinates": [item['value'][3]['lon'], item['value'][3]['lat']]
-            },
-            'properties': {
-                'count': 1,
-                'suburb': item['value'][0],
-                "timestamp": timestamp['value']
-            }
-        }
-        for timestamp in time_data
-        for item in location_data
-        if timestamp['key'] == item['key']
-    )
+            if time_key == key:
+                feature = {
+                    'type': 'Feature',
+                    "geometry": {
+                        'type': 'Point',
+                        "coordinates":
+                            [
+                                lon,
+                                lat
+                            ]
+                    },
+                    'properties': {
+                                   'surburb': suburb_name,
+                                   "timestamp": time_value
+                                   }
+                }
+                features.append(feature)
 
-    grouped_features = groupby(features, key=lambda x: (x['properties']['suburb'], x['properties']['timestamp']))
-    grouped_geojson = [list(features) for _, features in grouped_features]
-    return_json = {
-        "type": "FeatureCollection",
-        "features": grouped_geojson
+    geojson = {
+        'type': 'FeatureCollection',
+        'features': features
     }
-
-    return return_json
-
-
-
+    return geojson
 
 
 def happy_lga_time():
