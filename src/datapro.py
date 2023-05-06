@@ -53,11 +53,57 @@ def ai_loc_time():
     }
     return geojson
 
+def ai_loc_time_2():
+    location_db_name = 'lga_info'
+    location_view_name = 'LGA/_view/get_lga_info_geo'
+    location_response = requests.get(url + location_db_name + '/_design/' + location_view_name)
+    location_data = location_response.json()['rows']
+
+    time_db_name = 'twitter-data-with-location'
+    time_view_name = 'AI/_view/ai_loc_time'
+    time_response = requests.get(url + time_db_name + '/_design/' + time_view_name)
+    time_data = time_response.json()['rows']
+    
+    location_dict = {}
+    features = []
+
+    for item in location_data:
+        #{lga_code: [suburb_name,lon,lat],...}
+        location_dict[item['key']] = [item['value'][0],item['value'][3]['lon'],item['value'][3]['lat']]
+    for timestamp in time_data:
+            time_key = timestamp['key']
+            time_value = timestamp['value']
+            feature = {
+                    'type': 'Feature',
+                    "geometry": {
+                        'type': 'Point',
+                        "coordinates":
+                            [
+                                location_dict[time_key][1],
+                                location_dict[time_key][2]
+                            ]
+                    },
+                    'properties': {
+                                   'surburb': location_dict[time_key][0],
+                                   "timestamp": time_value
+                                   }
+                }
+            features.append(feature)
+    geojson = {
+        'type': 'FeatureCollection',
+        'features': features
+        }
+
+
+    return geojson
+
 
 def happy_lga_time():
     r1 = requests.get(url + "/" + "lga_info" + "/_design/LGA/_view/get_lga_info_geo")
+    # lga_code:[lga_name,state_code,state_name,coordinates,geo_shape]
     docs1 = r1.json()["rows"]
     r2 = requests.get(url + "/" + "test" + "/_design/general_happy/_view/only_sentiment?Reduced%20=true&group_level=1")
+    # [Lga_code]: [0:average,1:average,2:............,23:average]
     docs2 = r2.json()["rows"]
     mergelist = []
     for doc1 in docs1:
@@ -73,6 +119,37 @@ def happy_lga_time():
                                }
                 mergelist.append(merged_doc)
                 break
+    merged_docs = {
+            'type': 'FeatureCollection',
+            'features': mergelist
+            }
+    return merged_docs
+
+def happy_lga_time_2():
+    r1 = requests.get(url + "/" + "lga_info" + "/_design/LGA/_view/get_lga_info_geo")
+    # lga_code:[lga_name,state_code,state_name,coordinates,geo_shape]
+    docs1 = r1.json()["rows"]
+    r2 = requests.get(url + "/" + "test" + "/_design/general_happy/_view/only_sentiment?Reduced%20=true&group_level=1")
+    # [Lga_code]: [0:average,1:average,2:............,23:average]
+    docs2 = r2.json()["rows"]
+
+    location_dict = {}
+    mergelist = []
+
+    for item in docs1:
+        # {lga_code: [suburb_name,geo_shape],...}
+        location_dict[item['key']] = [item['value'][0],item['value'][4]]
+
+    for doc2 in docs2:
+        merged_doc = { **location_dict[doc2['key']][1],
+                               "properties": {
+                                    "name": location_dict[doc2['key']][0],
+                                    "sentiment": {**doc2["value"]}
+                               },
+                    }
+        mergelist.append(merged_doc)
+        break
+
     merged_docs = {
             'type': 'FeatureCollection',
             'features': mergelist
