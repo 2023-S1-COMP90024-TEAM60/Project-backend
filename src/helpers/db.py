@@ -1,7 +1,6 @@
 from src.constants.db_constants import database_info
 from couchdb import Server, Database
 from couchdb.client import Row
-import requests
 
 
 class CouchDbHelper(object):
@@ -79,30 +78,16 @@ class CouchDbHelper(object):
         location_dict = {}
         merge_list = []
 
-        r2 = requests.get("http://admin:comp90024-60@172.26.136.78:5984/" +
-                          "/" + "twitter-data-with-location-v2" +
-                          "/_design/Happy/_view/only_avg_sentiment?reduce=true&group=true")
-        docs2 = r2.json()["rows"]
-
         for row in db_lga.iterview(all_lga_info_geo_view, batch=1000):
             location_dict[row.key] = [row.value[0], row.value[4]]
 
-        for row in db_happy_hour.iterview(all_lga_hour_happy_view, batch=1000):
-            print(row)
+        for row in db_happy_hour.iterview(all_lga_hour_happy_view, batch=1000, reduce=True, group=True):
             merged_doc = {
                     **location_dict[row.key][1],
                     "properties": {
                         "name": location_dict[row.key][0],
                         "sentiment": {**row["value"]}
-                    },
-            }
-            merge_list.append(merged_doc)
-        for doc2 in docs2:
-            merged_doc = {**location_dict[doc2['key']][1],
-                "properties": {
-                    "name": location_dict[doc2['key']][0],
-                    "sentiment": {**doc2["value"]}
-                },
+                    }
             }
             merge_list.append(merged_doc)
 
