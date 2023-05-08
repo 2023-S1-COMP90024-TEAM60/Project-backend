@@ -21,20 +21,32 @@ def hello():
     return response
 
 
-@app.route("/AI/mapData", methods=['get'])
-def map_data():
-    global global_mapdata
-    if global_mapdata is None:
-        global_mapdata = ai_loc_time()
-    return jsonify(global_mapdata)
 
+@app.route("/AI/getMapData", methods=['get'])
+def get_map_data():
+    features = couchdb_helper.get_ai_loc_time()
+    data = {
+        'type': 'FeatureCollection',
+        'features': features
+    }
+    return jsonify(data)
 
 @app.route("/LGA/Happy", methods=['get'])
-def happy():
-    global global_happylga
-    if global_happylga is None:
-        global_happylga = happy_lga_time()
-    return jsonify(global_happylga)
+def get_happy_data():
+    mergelist = couchdb_helper.get_lga_happy_hour()
+    data = {
+            'type': 'FeatureCollection',
+            'features': mergelist
+        }
+    return jsonify(data)
+
+# @app.route("/LGA/Happy", methods=['get'])
+# def happy():
+#     global global_happylga
+#     if global_happylga is None:
+#         global_happylga = happy_lga_time()
+#     return jsonify(global_happylga)
+
 
 @app.route("/LGA/getAllLgaInfo", methods=['get'])
 def get_all_lga_info():
@@ -46,10 +58,10 @@ def get_all_lga_info():
     return jsonify(data)
 
 
-def compute_data():
-    global global_happylga, global_mapdata
-    global_mapdata = ai_loc_time()
-    global_happylga = happy_lga_time()
+# def compute_data():
+#     global global_happylga, global_mapdata
+#     global_mapdata = ai_loc_time()
+#     global_happylga = happy_lga_time()
 
 
 # @app.route("/AI/mapData", methods=['get'])
@@ -63,6 +75,13 @@ def compute_data():
 #     processed_data = happy_lga_time()
 #     return jsonify(processed_data)
 
+# @app.route("/AI/mapData", methods=['get'])
+# def map_data():
+#     global global_mapdata
+#     if global_mapdata is None:
+#         global_mapdata = ai_loc_time()
+#     return jsonify(global_mapdata)
+
 if __name__ == "__main__":
-    compute_data()
+    #compute_data()
     app.run(port=8000)

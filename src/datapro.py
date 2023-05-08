@@ -5,7 +5,7 @@ import couchdb
 
 admin = 'admin'
 password = 'comp90024-60'
-url = f'http://{admin}:{password}@172.26.136.78:5984/'
+url = f'http://admin:comp90024-60@172.26.136.78:5984/'
 couch = couchdb.Server(url)
 
 
@@ -156,7 +156,7 @@ def happy_lga_time():
             'type': 'FeatureCollection',
             'features': mergelist
             }
-    return merged_docs
+    return mergelist
 
 
 # @app.route("/LGA/Happy", methods=['get'])
