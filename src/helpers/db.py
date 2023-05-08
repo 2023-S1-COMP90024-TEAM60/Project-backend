@@ -34,11 +34,11 @@ class CouchDbHelper(object):
         all_lga_info_geo_view = lga_info_geo_database["views"]["get_lga_info_geo_view"]
         print(all_lga_info_geo_view)
 
-        ai_loc_time_database = database_info["ai_loc_time_database"]
-        print(ai_loc_time_database["name"])
-        db_ai = self.couchdb_server[ai_loc_time_database["name"]]
+        twitter_v1_database = database_info["twitter_database_v1"]
+        print(twitter_v1_database["name"])
+        db_ai = self.couchdb_server[twitter_v1_database["name"]]
 
-        all_ai_loc_time_view = ai_loc_time_database["views"]["get_ai_loc_time_view"]
+        all_ai_loc_time_view = twitter_v1_database["views"]["get_ai_loc_time_view"]
         row: Row
         location_dict = {}
         features = []
@@ -66,7 +66,7 @@ class CouchDbHelper(object):
         return features
 
     def get_lga_happy_hour(self):
-        lga_hour_happy_database = database_info["lga_hour_happy_database"]
+        lga_hour_happy_database = database_info["twitter_database_v2"]
         print(lga_hour_happy_database["name"])
         db_happy_hour = self.couchdb_server[lga_hour_happy_database["name"]]
         all_lga_hour_happy_view = lga_hour_happy_database["views"]["get_lga_hour_happy_view"]
