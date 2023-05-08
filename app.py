@@ -2,17 +2,14 @@ from flask import Flask, g, jsonify
 from flask_cors import CORS
 import couchdb
 from src.datapro import ai_loc_time, happy_lga_time
+from src.helpers.db import CouchDbHelper
 
 admin = 'admin'
 password = 'comp90024-60'
 url = f'http://{admin}:{password}@172.26.136.78:5984/'
 couch = couchdb.Server(url)
-db_name = 'testdb'
 
-if db_name not in couch:
-    db = couch.create(db_name)
-else:
-    db = couch[db_name]
+couchdb_helper = CouchDbHelper(couch)
 
 app = Flask(__name__)
 CORS(app)
@@ -38,6 +35,15 @@ def happy():
     if global_happylga is None:
         global_happylga = happy_lga_time()
     return jsonify(global_happylga)
+
+@app.route("/LGA/getAllLgaInfo", methods=['get'])
+def get_all_lga_info():
+    suburbs, states = couchdb_helper.get_all_lga_info()
+    data = {
+        "suburbs": suburbs,
+        "states": states
+    }
+    return jsonify(data)
 
 
 def compute_data():
