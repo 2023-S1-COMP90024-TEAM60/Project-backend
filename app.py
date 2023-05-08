@@ -14,14 +14,7 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route("/api/v1/hello", methods=['get'])
-def hello():
-    response = jsonify(message="Simple server is running")
-    return response
-
-
-
-@app.route("/AI/getMapData", methods=['get'])
+@app.route("/AI/aiData", methods=['get'])
 def get_map_data():
     features = couchdb_helper.get_ai_loc_time()
     data = {
@@ -30,7 +23,8 @@ def get_map_data():
     }
     return jsonify(data)
 
-@app.route("/LGA/Happy", methods=['get'])
+
+@app.route("/LGA/sentimentData", methods=['get'])
 def get_happy_data():
     merge_list = couchdb_helper.get_lga_happy_hour()
     data = {
