@@ -21,7 +21,8 @@ database_info = {
         "name": "twitter-data-with-location-v2",
         "views": {
             "get_lga_hour_happy_view": "Happy/only_avg_sentiment",
-            "get_ai_count": "AI_count/count"
+            "get_ai_tweets_count": "AI_count/count",
+            "get_ai_lang_count": "AI_Language/lang"
         }
     },
     "sudo_other_data_raw_database": {

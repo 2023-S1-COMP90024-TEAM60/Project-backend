@@ -22,7 +22,9 @@ class CouchDbHelper(object):
                 "state_id": row.value[1]
             }
             if row.value[1] not in states:
-                states[row.value[1]] = row.value[2]
+                states[row.value[1]] = {
+                    "name": row.value[2]
+                }
         return suburbs, states
 
     def get_ai_loc_time(self):
@@ -92,7 +94,7 @@ class CouchDbHelper(object):
 
         return merge_list
     
-    def get_AI_count(self, state_code=None, top=None):
+    def get_AI_tweets_count(self, state_code=None, top=None):
         twitter_database = database_info["twitter_database_v2"]
         db = self.couchdb_server[twitter_database["name"]]
 
@@ -104,7 +106,7 @@ class CouchDbHelper(object):
         else:
             query_parameters["group_level"] = 1
 
-        ai_count_view = twitter_database["views"]["get_ai_count"]
+        ai_count_view = twitter_database["views"]["get_ai_tweets_count"]
         row: Row
         data = {}
         for row in db.iterview(ai_count_view, batch=1000, wrapper=CouchDbHelper._row_wrapper, **query_parameters):
@@ -137,6 +139,29 @@ class CouchDbHelper(object):
                     lga_data[row["key"][1]] = row["value"]
         return state_data, lga_data
     
+    def get_AI_lang_count(self, state_codes, lga_codes): 
+        twitter_database = database_info["twitter_database_v2"]
+        db = self.couchdb_server[twitter_database["name"]]
+
+        ai_lang_count_view = twitter_database["views"]["get_ai_lang_count"]
+
+        state_data = {}
+        lga_data = {}
+        row: Row
+        if len(state_codes) > 0:
+            for row in db.iterview(ai_lang_count_view, batch=1000, wrapper=CouchDbHelper._row_wrapper, reduce=True, group_level=1):
+                if len(state_codes) == 0:
+                    state_data[row["key"][0]] = row["value"]
+                elif row["key"][0] in state_codes:
+                    state_data[row["key"][0]] = row["value"]
+        if len(lga_codes) > 0:
+            for row in db.iterview(ai_lang_count_view, batch=1000, wrapper=CouchDbHelper._row_wrapper, reduce=True, group_level=2):
+                if len(state_codes) == 0:
+                    lga_data[row["key"][1]] = row["value"]
+                elif row["key"][1] in lga_codes:
+                    lga_data[row["key"][1]] = row["value"]
+        return state_data, lga_data
+
     @staticmethod
     def _row_wrapper(row: Row):
         if "id" not in row:
