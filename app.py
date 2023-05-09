@@ -46,7 +46,7 @@ def get_happy_data():
     return jsonify(data)
 
 
-@app.route("/LGA/getAllLgaInfo", methods=['get'])
+@app.route("/LGA/lgaInfo", methods=['get'])
 def get_all_lga_info():
     suburbs, states = couchdb_helper.get_all_lga_info()
     data = {
@@ -80,7 +80,7 @@ def get_ai_lang_count():
     }
     return jsonify(return_payload)
 
-@app.route("/sudo/getLocationsInfo", methods=['get'])
+@app.route("/sudo/locationsInfo", methods=['get'])
 def get_sudo_locations_info():
     args = request.args
     state_codes = args.getlist("state_codes")
