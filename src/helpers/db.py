@@ -181,7 +181,7 @@ class CouchDbHelper(object):
                     state_data[row["key"][0]] = row["value"]
         if len(lga_codes) > 0:
             for row in db.iterview(ai_lang_count_view, batch=1000, wrapper=CouchDbHelper._row_wrapper, reduce=True, group_level=2):
-                if len(state_codes) == 0:
+                if len(lga_codes) == 0:
                     lga_data[row["key"][1]] = row["value"]
                 elif row["key"][1] in lga_codes:
                     lga_data[row["key"][1]] = row["value"]
