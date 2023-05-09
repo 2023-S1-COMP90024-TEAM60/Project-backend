@@ -94,6 +94,31 @@ class CouchDbHelper(object):
 
         return merge_list
     
+    def get_state_happy_hour(self):
+
+        state_info_database = database_info["state_info_database"]
+        print(state_info_database["name"])
+        db_state = self.couchdb_server[state_info_database["name"]]
+        all_state_info_view = state_info_database["views"]["get_state_info_view"]
+
+
+
+        state_hour_happy_database = database_info["twitter_database_v2"]
+        print(state_hour_happy_database["name"])
+        db_happy_hour = self.couchdb_server[state_hour_happy_database["name"]]
+        all_state_hour_happy_view = state_hour_happy_database["views"]["get_state_hour_happy_view"]
+
+        merge_list = []
+        senti_list = {}
+        for seti in db_happy_hour.iterview(all_state_hour_happy_view, batch=1000, reduce=True, group=True):
+            senti_list[seti.key] = seti.value
+
+        for row in db_state.iterview(all_state_info_view, batch=1000):
+            row.value['properties']['sentiment'] = senti_list[row.key]
+            merge_list.append(row.value)
+
+        return merge_list
+    
     def get_AI_tweets_count(self, state_code=None, top=None):
         twitter_database = database_info["twitter_database_v2"]
         db = self.couchdb_server[twitter_database["name"]]
