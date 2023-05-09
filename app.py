@@ -55,7 +55,7 @@ def get_all_lga_info():
     }
     return jsonify(data)
 
-@app.route("/AI/count", methods=['get'])
+@app.route("/AI/tweetsCount", methods=['get'])
 def get_ai_count():
     args = request.args
     state_code = args.get("state_code")
