@@ -1,4 +1,4 @@
-from flask import Flask, g, jsonify
+from flask import Flask, g, jsonify, request
 from flask_cors import CORS
 import couchdb
 from src.helpers.db import CouchDbHelper
@@ -55,6 +55,31 @@ def get_all_lga_info():
     }
     return jsonify(data)
 
+@app.route("/AI/count", methods=['get'])
+def get_ai_count():
+    args = request.args
+    state_code = args.get("state_code")
+    top = args.get("top")
+    if top:
+        top = int(top)
+    ai_count_data = couchdb_helper.get_AI_count(state_code, top)
+    return_payload = {
+        "ai_count": ai_count_data
+    }
+    return jsonify(return_payload)
+
+@app.route("/sudo/getLocationsInfo", methods=['get'])
+def get_sudo_locations_info():
+    args = request.args
+    state_codes = args.getlist("state_codes")
+    lga_codes = args.getlist("lga_codes")
+    state_data, lga_data = couchdb_helper.get_sudo_location_info(state_codes, lga_codes)
+
+    return_payload = {
+        "state_data": state_data,
+        "lga_data": lga_data
+    }
+    return jsonify(return_payload)
 
 if __name__ == "__main__":
     app.run(port=8000)

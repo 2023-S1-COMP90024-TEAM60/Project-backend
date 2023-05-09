@@ -20,7 +20,14 @@ database_info = {
     "twitter_database_v2": {
         "name": "twitter-data-with-location-v2",
         "views": {
-            "get_lga_hour_happy_view": "Happy/only_avg_sentiment"
+            "get_lga_hour_happy_view": "Happy/only_avg_sentiment",
+            "get_ai_count": "AI_count/count"
+        }
+    },
+    "sudo_other_data_raw_database": {
+        "name": "sudo_other_data_raw",
+        "views": {
+            "data_sum": "sudo_other_data/sum",
         }
     }
 }
