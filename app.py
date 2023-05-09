@@ -36,9 +36,9 @@ def get_map_data():
 
 
 
-@app.route("/LGA/sentimentData", methods=['get'])
+@app.route("/STATE/sentimentData", methods=['get'])
 def get_happy_data():
-    merge_list = couchdb_helper.get_lga_happy_hour()
+    merge_list = couchdb_helper.get_state_happy_hour()
     data = {
             'type': 'FeatureCollection',
             'features': merge_list
