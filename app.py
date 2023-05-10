@@ -33,6 +33,14 @@ def get_map_data():
     return jsonify(data)
 
 
+@app.route("/LGA/sentimentData", methods=['get'])
+def get_LGA_happy_data():
+    merge_list = couchdb_helper.get_lga_happy_hour()
+    data = {
+            'type': 'FeatureCollection',
+            'features': merge_list
+        }
+    return jsonify(data)
 
 
 
