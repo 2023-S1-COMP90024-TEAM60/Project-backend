@@ -23,7 +23,9 @@ database_info = {
             "get_lga_hour_happy_view": "Happy/only_avg_sentiment",
             "get_state_hour_happy_view": "Happy_state/state_avg_sentiment",
             "get_ai_tweets_count": "AI_count/count",
-            "get_ai_lang_count": "AI_Language/lang"
+            "get_ai_lang_count": "AI_Language/lang",
+            "get_kpop_boy_gril_view": "Kpop/count_group_term",
+            "get_kpop_all_group_view": "Kpop/term_count"
         }
     },
     "sudo_other_data_raw_database": {
@@ -36,6 +38,13 @@ database_info = {
         "name": "state_info",
         "views": {
             "get_state_info_view": "State_info/state_info"
+        }
+    },
+    "mastodon_database": {
+        "name": "mastodon",
+        "views": {
+            "get_mastodon_timeline_view": "covid_timeline/covid_count_all",
+            "get_mastodon_keywords_view": "covid_term/term_count"
         }
     }
 }

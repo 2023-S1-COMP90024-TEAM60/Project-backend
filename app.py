@@ -101,5 +101,26 @@ def get_sudo_locations_info():
     }
     return jsonify(return_payload)
 
+@app.route("/Mastodon/timeline", methods=['get'])
+def get_mastodon_timeline():
+    data = couchdb_helper.get_Mastodon_timeline()
+    return jsonify(data)
+
+@app.route("/Mastodon/keywords", methods=['get'])
+def get_mastodon_keywords():
+    data = couchdb_helper.get_Mastodon_keywords()
+    return jsonify(data)
+
+@app.route("/Kpop/allGroup", methods=['get'])
+def get_kpop_all_group():
+    data = couchdb_helper.get_Kpop_all_group()
+    return jsonify(data)
+
+@app.route("/Kpop/boyGirl", methods=['get'])
+def get_kpop_boy_girl():
+    data = couchdb_helper.get_Kpop_boy_girl()
+    return jsonify(data)
+
+
 if __name__ == "__main__":
     app.run(port=8000)
