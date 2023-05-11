@@ -116,7 +116,7 @@ def get_kpop_all_group():
     data = couchdb_helper.get_Kpop_all_group()
     return jsonify(data)
 
-@app.route("/Kpop/boyGirl", methods=['get'])
+@app.route("/kpop/boyGirl", methods=['get'])
 def get_kpop_boy_girl():
     data = couchdb_helper.get_Kpop_boy_girl()
     return jsonify(data)
