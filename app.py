@@ -101,17 +101,17 @@ def get_sudo_locations_info():
     }
     return jsonify(return_payload)
 
-@app.route("/Mastodon/timeline", methods=['get'])
+@app.route("/mastodon/covid/timelineCount", methods=['get'])
 def get_mastodon_timeline():
     data = couchdb_helper.get_Mastodon_timeline()
     return jsonify(data)
 
-@app.route("/Mastodon/keywords", methods=['get'])
+@app.route("/mastodon/covid/keywordsCount", methods=['get'])
 def get_mastodon_keywords():
     data = couchdb_helper.get_Mastodon_keywords()
     return jsonify(data)
 
-@app.route("/Kpop/allGroup", methods=['get'])
+@app.route("/kpop/allGroup", methods=['get'])
 def get_kpop_all_group():
     data = couchdb_helper.get_Kpop_all_group()
     return jsonify(data)
