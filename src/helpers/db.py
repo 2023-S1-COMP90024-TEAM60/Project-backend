@@ -237,8 +237,16 @@ class CouchDbHelper(object):
             name_count['name'] = row.key
             name_count['count'] = row.value
             result.append(name_count)
+        
+        result = sorted(result, key=lambda x: x['count'], reverse=True)
+        final = result[:5]
 
-        return result
+        final.append({'name':'others', 'count':0})
+
+        for other in result[5:]:
+            final[-1]['count'] += other['count']
+
+        return final
 
 
     def get_Kpop_boy_girl(self):
