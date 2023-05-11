@@ -25,7 +25,7 @@ database_info = {
             "get_ai_tweets_count": "AI_count/count",
             "get_ai_lang_count": "AI_Language/lang",
             "get_kpop_boy_gril_view": "Kpop/count_group_term",
-            "get_kpop_all_group_view": "Kpop/term_count"
+            "get_kpop_all_group_view": "Kpop_term/term_count"
         }
     },
     "sudo_other_data_raw_database": {

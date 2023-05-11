@@ -93,7 +93,7 @@ class CouchDbHelper(object):
             merge_list.append(merged_doc)
 
         return merge_list
-    
+
     def get_state_happy_hour(self):
 
         state_info_database = database_info["state_info_database"]
@@ -118,7 +118,7 @@ class CouchDbHelper(object):
             merge_list.append(row.value)
 
         return merge_list
-    
+
     def get_AI_tweets_count(self, state_code=None, top=None):
         twitter_database = database_info["twitter_database_v2"]
         db = self.couchdb_server[twitter_database["name"]]
@@ -163,8 +163,8 @@ class CouchDbHelper(object):
                 if row["key"][1] in lga_codes:
                     lga_data[row["key"][1]] = row["value"]
         return state_data, lga_data
-    
-    def get_AI_lang_count(self, state_codes, lga_codes): 
+
+    def get_AI_lang_count(self, state_codes, lga_codes):
         twitter_database = database_info["twitter_database_v2"]
         db = self.couchdb_server[twitter_database["name"]]
 
@@ -186,17 +186,19 @@ class CouchDbHelper(object):
                 elif row["key"][1] in lga_codes:
                     lga_data[row["key"][1]] = row["value"]
         return state_data, lga_data
-    
+
     def get_Mastodon_timeline(self):
 
         mastodon_database = database_info["mastodon_database"]
+        print(mastodon_database["name"])
         db = self.couchdb_server[mastodon_database["name"]]
         mastodon_timeline_view = mastodon_database["views"]["get_mastodon_timeline_view"]
-       
+
         result  = []
 
-        for row in db(mastodon_timeline_view, batch=1000):
-            time_count =  {}
+
+        for row in db.iterview(mastodon_timeline_view, batch=1000, reduce= True, group= True):
+            time_count = {}
             time_count['time'] = row.key
             time_count['count'] = row.value
             result.append(time_count)
@@ -209,27 +211,28 @@ class CouchDbHelper(object):
         mastodon_database = database_info["mastodon_database"]
         db = self.couchdb_server[mastodon_database["name"]]
         mastodon_keywords_view = mastodon_database["views"]["get_mastodon_keywords_view"]
-       
-        result  = []
 
-        for row in db(mastodon_keywords_view, batch=1000):
-            name_value =  {}
+        result = []
+
+        for row in db.iterview(mastodon_keywords_view, batch=1000, reduce=True, group=True):
+
+            name_value = {}
             name_value['name'] = row.key
             name_value['value'] = row.value
             result.append(name_value)
 
         return result
-    
+
 
     def get_Kpop_all_group(self):
 
         twitter_database = database_info["twitter_database_v2"]
         db = self.couchdb_server[twitter_database["name"]]
         kpop_all_group_view = twitter_database["views"]["get_kpop_all_group_view"]
-       
+
         result  = []
 
-        for row in db(kpop_all_group_view , batch=1000):
+        for row in db.iterview(kpop_all_group_view, batch=1000,reduce=True, group=True):
             name_count =  {}
             name_count['name'] = row.key
             name_count['count'] = row.value
@@ -237,7 +240,7 @@ class CouchDbHelper(object):
 
         return result
 
-    
+
     def get_Kpop_boy_girl(self):
 
         state_info_database = database_info["state_info_database"]
@@ -247,23 +250,25 @@ class CouchDbHelper(object):
 
         state_kpop_database = database_info["twitter_database_v2"]
         db_kpop = self.couchdb_server[state_kpop_database["name"]]
-        kpop_boy_girl_view = state_kpop_database["views"]["get_kpop_boy_girl_view"]
+        #print(db_kpop)
+        kpop_boy_girl_view = state_kpop_database["views"]["get_kpop_boy_gril_view"]
 
         result = []
         kpop_list = {}
-        for state in db_kpop.iterview(kpop_boy_girl_view, batch=1000):
+        for state in db_kpop.iterview(kpop_boy_girl_view, batch=1000, reduce=True, group=True):
             kpop_list[state.key] = state.value
 
         for row in db_state.iterview(all_state_info_view, batch=1000):
             state_name = row.value['properties']['state_name']
             state_code = row.value['properties']['state_code']
+
             name_value = {'name': state_name,
                           'value': kpop_list[state_code]
                           }
             result.append(name_value)
 
         return result
-    
+
 
 
     @staticmethod
