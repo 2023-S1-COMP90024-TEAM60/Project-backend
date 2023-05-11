@@ -266,7 +266,7 @@ class CouchDbHelper(object):
                 name_value = {'name': state_name,
                             'value': kpop_list[state_code]
                             }
-            result.append(name_value)
+                result.append(name_value)
 
         return result
 
