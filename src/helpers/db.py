@@ -262,9 +262,10 @@ class CouchDbHelper(object):
             state_name = row.value['properties']['state_name']
             state_code = row.value['properties']['state_code']
 
-            name_value = {'name': state_name,
-                          'value': kpop_list[state_code]
-                          }
+            if state_code in kpop_list:
+                name_value = {'name': state_name,
+                            'value': kpop_list[state_code]
+                            }
             result.append(name_value)
 
         return result
