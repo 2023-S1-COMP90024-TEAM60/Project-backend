@@ -35,7 +35,12 @@ def get_map_data():
 
 @app.route("/LGA/sentimentData", methods=['get'])
 def get_LGA_happy_data():
-    merge_list = couchdb_helper.get_lga_happy_hour()
+    args = request.args
+    need_loc_param= args.get("need_loc")
+    need_loc = True
+    if need_loc_param == "false":
+        need_loc = False
+    merge_list = couchdb_helper.get_lga_happy_hour(need_loc=need_loc)
     data = {
             'type': 'FeatureCollection',
             'features': merge_list
@@ -121,6 +126,10 @@ def get_kpop_boy_girl():
     data = couchdb_helper.get_Kpop_boy_girl()
     return jsonify(data)
 
+@app.route("/Sentiment/timeline", methods=['get'])
+def get_sentiment_timeline():
+    results = couchdb_helper.get_australia_sentiment_info_per_hour()
+    return jsonify(results)
 
 if __name__ == "__main__":
     app.run(port=8000)

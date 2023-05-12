@@ -66,7 +66,7 @@ class CouchDbHelper(object):
             features.append(feature)
         return features
 
-    def get_lga_happy_hour(self):
+    def get_lga_happy_hour(self, need_loc=True):
         lga_hour_happy_database = database_info["twitter_database_v2"]
         print(lga_hour_happy_database["name"])
         db_happy_hour = self.couchdb_server[lga_hour_happy_database["name"]]
@@ -79,17 +79,24 @@ class CouchDbHelper(object):
         location_dict = {}
         merge_list = []
 
-        for row in db_lga.iterview(all_lga_info_geo_view, batch=1000):
-            location_dict[row.key] = [row.value[0], row.value[4]]
-
-        for row in db_happy_hour.iterview(all_lga_hour_happy_view, batch=1000, reduce=True, group=True):
-            merged_doc = {
-                    **location_dict[row.key][1],
-                    "properties": {
-                        "name": location_dict[row.key][0],
-                        "sentiment": {**row["value"]}
-                    }
-            }
+        if need_loc:
+            for row in db_lga.iterview(all_lga_info_geo_view, batch=1000,):
+                location_dict[row.key] = [row.value[0], row.value[4]]
+        
+        for row in db_happy_hour.iterview(all_lga_hour_happy_view, batch=1000, limit=1000, reduce=True, group=True):
+            if need_loc:
+                merged_doc = {
+                        **location_dict[row.key][1],
+                        "properties": {
+                            "name": location_dict[row.key][0],
+                            "sentiment": {**row["value"]}
+                        }
+                }
+            else:
+                merged_doc = {
+                    "lga_code": row.key,
+                    "sentiment": {**row["value"]}
+                }
             merge_list.append(merged_doc)
 
         return merge_list
@@ -277,7 +284,20 @@ class CouchDbHelper(object):
                 result.append(name_value)
 
         return result
+    
+    def get_australia_sentiment_info_per_hour(self):
+        twitter_database = database_info["twitter_database_v2"]
+        db = self.couchdb_server[twitter_database["name"]]
+        australia_sentiment_info_per_hour_view = twitter_database["views"]["get_australia_sentiment_info_per_hour"]
 
+        row: Row
+        results = []
+        for row in db.iterview(australia_sentiment_info_per_hour_view, batch=1000, wrapper=CouchDbHelper._row_wrapper, reduce=True, group=True):
+            results.append({
+                "time": row["key"],
+                "value": row["value"]["sum"] / row["value"]["count"]
+            })
+        return results
 
 
     @staticmethod
