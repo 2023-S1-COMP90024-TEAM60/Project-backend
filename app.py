@@ -131,5 +131,11 @@ def get_sentiment_timeline():
     results = couchdb_helper.get_australia_sentiment_info_per_hour()
     return jsonify(results)
 
+@app.route("/Sentiment/topLgaPerState", methods=['get'])
+def get_top_lga_sentiment():
+    results = couchdb_helper.get_top_lga_per_state()
+    return jsonify(results)
+
+
 if __name__ == "__main__":
     app.run(port=8000)
