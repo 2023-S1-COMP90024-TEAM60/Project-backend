@@ -298,6 +298,41 @@ class CouchDbHelper(object):
                 "value": row["value"]["sum"] / row["value"]["count"]
             })
         return results
+    
+    def get_top_lga_per_state(self):
+        twitter_database = database_info["twitter_database_v2"]
+        db = self.couchdb_server[twitter_database["name"]]
+        lga_sentiment = twitter_database["views"]["get_top_lga_sentiment"]
+
+        state_lga = {}
+        for row in db.iterview(lga_sentiment, batch=1000, wrapper=CouchDbHelper._row_wrapper, reduce=True, group_level=2):
+            if int(row["key"][1]) == 0:
+                continue 
+            if row["key"][0] not in state_lga:
+                state_lga[row["key"][0]] = [{
+                    "lga_code": row["key"][1],
+                    "sentiment": row["value"]["sentiment_all"] / row["value"]["num"]
+                }]
+            else:
+                state_lga[row["key"][0]].append({
+                    "lga_code": row["key"][1],
+                    "sentiment": row["value"]["sentiment_all"] / row["value"]["num"]
+                })
+        
+        top_lga_per_state = []
+        for state in state_lga:
+            max = -10000
+            max_index = -1
+            for index, lga_sentiment in enumerate(state_lga[state]):
+                if lga_sentiment["sentiment"] > max:
+                    max = lga_sentiment["sentiment"]
+                    max_index = index
+            top_lga_per_state.append({
+                "state_code": state,
+                "lga_code": state_lga[state][max_index]["lga_code"],
+                "sentiment": state_lga[state][max_index]["sentiment"]
+            })
+        return top_lga_per_state
 
 
     @staticmethod
