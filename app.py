@@ -13,17 +13,7 @@ couchdb_helper = CouchDbHelper(couch)
 app = Flask(__name__)
 CORS(app)
 
-
-
-@app.route("/api/v1/hello", methods=['get'])
-def hello():
-    response = jsonify(message="Simple server is running")
-    return response
-
-
-
-
-@app.route("/AI/aiData", methods=['get'])
+@app.route("/ai/aiData", methods=['get'])
 def get_map_data():
     features = couchdb_helper.get_ai_loc_time()
     data = {
@@ -33,7 +23,7 @@ def get_map_data():
     return jsonify(data)
 
 
-@app.route("/LGA/sentimentData", methods=['get'])
+@app.route("/lga/sentimentData", methods=['get'])
 def get_LGA_happy_data():
     args = request.args
     need_loc_param= args.get("need_loc")
@@ -49,7 +39,7 @@ def get_LGA_happy_data():
 
 
 
-@app.route("/STATE/sentimentData", methods=['get'])
+@app.route("/state/sentimentData", methods=['get'])
 def get_happy_data():
     merge_list = couchdb_helper.get_state_happy_hour()
     data = {
@@ -59,7 +49,7 @@ def get_happy_data():
     return jsonify(data)
 
 
-@app.route("/LGA/lgaInfo", methods=['get'])
+@app.route("/lga/lgaInfo", methods=['get'])
 def get_all_lga_info():
     suburbs, states = couchdb_helper.get_all_lga_info()
     data = {
@@ -68,7 +58,7 @@ def get_all_lga_info():
     }
     return jsonify(data)
 
-@app.route("/AI/tweetsCount", methods=['get'])
+@app.route("/ai/tweetsCount", methods=['get'])
 def get_ai_tweets_count():
     args = request.args
     state_code = args.get("state_code")
@@ -81,7 +71,7 @@ def get_ai_tweets_count():
     }
     return jsonify(return_payload)
 
-@app.route("/AI/langCount", methods=['get'])
+@app.route("/ai/langCount", methods=['get'])
 def get_ai_lang_count():
     args = request.args
     state_codes = args.getlist("state_codes")
@@ -106,32 +96,32 @@ def get_sudo_locations_info():
     }
     return jsonify(return_payload)
 
-@app.route("/Mastodon/timeline", methods=['get'])
+@app.route("/mastodon/covid/timelineCount", methods=['get'])
 def get_mastodon_timeline():
     data = couchdb_helper.get_Mastodon_timeline()
     return jsonify(data)
 
-@app.route("/Mastodon/keywords", methods=['get'])
+@app.route("/mastodon/covid/keywordsCount", methods=['get'])
 def get_mastodon_keywords():
     data = couchdb_helper.get_Mastodon_keywords()
     return jsonify(data)
 
-@app.route("/Kpop/allGroup", methods=['get'])
+@app.route("/kpop/allGroup", methods=['get'])
 def get_kpop_all_group():
     data = couchdb_helper.get_Kpop_all_group()
     return jsonify(data)
 
-@app.route("/Kpop/boyGirl", methods=['get'])
+@app.route("/kpop/genderGroup", methods=['get'])
 def get_kpop_boy_girl():
     data = couchdb_helper.get_Kpop_boy_girl()
     return jsonify(data)
 
-@app.route("/Sentiment/timeline", methods=['get'])
+@app.route("/sentiment/timelineCount", methods=['get'])
 def get_sentiment_timeline():
     results = couchdb_helper.get_australia_sentiment_info_per_hour()
     return jsonify(results)
 
-@app.route("/Sentiment/topLgaPerState", methods=['get'])
+@app.route("/sentiment/topLgaPerState", methods=['get'])
 def get_top_lga_sentiment():
     results = couchdb_helper.get_top_lga_per_state()
     return jsonify(results)
