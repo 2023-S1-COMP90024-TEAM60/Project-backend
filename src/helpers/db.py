@@ -2,6 +2,7 @@ from src.constants.db_constants import database_info
 from couchdb import Server, Database
 from couchdb.client import Row
 from uuid import uuid4
+from datetime import datetime
 
 class CouchDbHelper(object):
 
@@ -205,10 +206,13 @@ class CouchDbHelper(object):
 
 
         for row in db.iterview(mastodon_timeline_view, batch=1000, reduce= True, group= True):
-            time_count = {}
-            time_count['time'] = row.key
-            time_count['count'] = row.value
-            result.append(time_count)
+            my_date = datetime(2022,5,5)
+            current = datetime.strptime(row.key,"%Y-%m-%d")
+            if current > my_date:
+                time_count = {}
+                time_count['time'] = row.key
+                time_count['count'] = row.value
+                result.append(time_count)
 
         return result
 
