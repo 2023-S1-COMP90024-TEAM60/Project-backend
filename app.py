@@ -4,13 +4,6 @@ from flask_cors import CORS
 import couchdb
 from src.helpers.db import CouchDbHelper
 
-# admin = 'admin'
-# password = 'comp90024-60'
-# url = f'http://{admin}:{password}@172.26.136.78:5984/'
-# couch = couchdb.Server(url)
-#
-# couchdb_helper = CouchDbHelper(couch)
-
 username_file = os.environ.get('COUCHDB_USERNAME_FILE')
 password_file = os.environ.get('COUCHDB_PASSWORD_FILE')
 
