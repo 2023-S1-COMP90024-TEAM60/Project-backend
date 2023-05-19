@@ -206,7 +206,7 @@ class CouchDbHelper(object):
 
 
         for row in db.iterview(mastodon_timeline_view, batch=1000, reduce= True, group= True):
-            my_date = datetime(2023,5,5)
+            my_date = datetime(2023,5,8)
             current = datetime.strptime(row.key,"%Y-%m-%d")
             if current > my_date:
                 time_count = {}
