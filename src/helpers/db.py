@@ -36,11 +36,11 @@ class CouchDbHelper(object):
         all_lga_info_geo_view = lga_info_geo_database["views"]["get_lga_info_geo_view"]
         print(all_lga_info_geo_view)
 
-        twitter_v1_database = database_info["twitter_database_v1"]
-        print(twitter_v1_database["name"])
-        db_ai = self.couchdb_server[twitter_v1_database["name"]]
+        twitter_v2_database = database_info["twitter_database_v2"]
+        print(twitter_v2_database["name"])
+        db_ai = self.couchdb_server[twitter_v2_database["name"]]
 
-        all_ai_loc_time_view = twitter_v1_database["views"]["get_ai_loc_time_view"]
+        all_ai_loc_time_view = twitter_v2_database["views"]["get_ai_loc_time_view"]
         row: Row
         location_dict = {}
         features = []

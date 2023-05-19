@@ -11,12 +11,6 @@ database_info = {
             "get_lga_info_geo_view": "LGA/get_lga_info_geo"
         }
     },
-    "twitter_database_v1": {
-        "name": "twitter-data-with-location",
-        "views": {
-            "get_ai_loc_time_view": "AI/ai_loc_time"
-        }
-    },
     "twitter_database_v2": {
         "name": "twitter-data-with-location-v2",
         "views": {
@@ -27,7 +21,8 @@ database_info = {
             "get_kpop_boy_gril_view": "Kpop/count_group_term",
             "get_kpop_all_group_view": "Kpop_term/term_count",
             "get_australia_sentiment_info_per_hour": "Happy/each_hour_info",
-            "get_top_lga_sentiment": "Happy_lga/state_lga"
+            "get_top_lga_sentiment": "Happy_lga/state_lga",
+            "get_ai_loc_time_view": "AI/ai_lga_time"
         }
     },
     "sudo_other_data_raw_database": {
