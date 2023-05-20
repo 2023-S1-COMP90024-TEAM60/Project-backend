@@ -346,6 +346,34 @@ class CouchDbHelper(object):
                 "sentiment": state_lga[state][max_index]["sentiment"]
             })
         return top_lga_per_state
+    
+
+    def get_Covid_twitter(self):
+
+        covid_database = database_info["twitter_database_v2"]
+        db = self.couchdb_server[covid_database["name"]]
+        covid_twitter_view = covid_database["views"]["get_covid_twitter"]
+
+        result = []
+
+        for row in db.iterview(covid_twitter_view, batch=1000, reduce=True, group=True):
+
+            name_value = {}
+            name_value['name'] = row.key
+            name_value['value'] = row.value
+            result.append(name_value)
+        
+        result = sorted(result, key=lambda x: x['value'], reverse=True)
+        final = result[:8]
+
+        final.append({'name':'others', 'value':0})
+
+        for other in result[8:]:
+            final[-1]['value'] += other['value']
+        
+
+        return final
+    
 
 
     @staticmethod

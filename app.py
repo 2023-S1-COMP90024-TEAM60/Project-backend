@@ -136,6 +136,11 @@ def get_top_lga_sentiment():
     results = couchdb_helper.get_top_lga_per_state()
     return jsonify(results)
 
+@app.route("/Covid/twitter", methods=['get'])
+def get_covid_twitter():
+    data = couchdb_helper.get_Covid_twitter()
+    return jsonify(data)
+
 
 if __name__ == "__main__":
     app.run(port=8000)
