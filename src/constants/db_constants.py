@@ -22,7 +22,8 @@ database_info = {
             "get_kpop_all_group_view": "Kpop_term/term_count",
             "get_australia_sentiment_info_per_hour": "Happy/each_hour_info",
             "get_top_lga_sentiment": "Happy_lga/state_lga",
-            "get_ai_loc_time_view": "AI/ai_lga_time"
+            "get_ai_loc_time_view": "AI/ai_lga_time",
+            "get_covid_twitter":"Covid/covid_term_twitter"
         }
     },
     "sudo_other_data_raw_database": {
