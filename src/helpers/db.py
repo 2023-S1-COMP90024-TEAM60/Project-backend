@@ -233,11 +233,11 @@ class CouchDbHelper(object):
             result.append(name_value)
         
         result = sorted(result, key=lambda x: x['value'], reverse=True)
-        final = result[:5]
+        final = result[:8]
 
         final.append({'name':'others', 'value':0})
 
-        for other in result[5:]:
+        for other in result[8:]:
             final[-1]['value'] += other['value']
         
 
