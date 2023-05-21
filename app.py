@@ -22,6 +22,13 @@ couch = couchdb.Server(url)
 
 couchdb_helper = CouchDbHelper(couch)
 
+# admin = 'admin'
+# password = 'comp90024-60'
+# url = f'http://{admin}:{password}@172.26.136.78:5984/'
+# couch = couchdb.Server(url)
+#
+# couchdb_helper = CouchDbHelper(couch)
+
 app = Flask(__name__)
 CORS(app)
 
@@ -138,7 +145,7 @@ def get_top_lga_sentiment():
     results = couchdb_helper.get_top_lga_per_state()
     return jsonify(results)
 
-@app.route("/Covid/twitter", methods=['get'])
+@app.route("/covid/twitter", methods=['get'])
 def get_covid_twitter():
     data = couchdb_helper.get_Covid_twitter()
     return jsonify(data)
