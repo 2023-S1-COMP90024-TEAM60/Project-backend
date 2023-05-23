@@ -6,6 +6,9 @@ Important thing: The project is only used for the University of Melbourne COMP90
 **Collaborator**:<br>
 
 [CodingBunnyi](https://github.com/CodingBunnyi): Yuhan Qian 1244574 [**yuhqian1@student.unimelb.edu.au**](mailto:yuhqian1@student.unimelb.edu.au)<br>
+
+[a572150628](https://github.com/a572150628): Ao Wang 1273882 [**aowang@student.unimelb.edu.au**](mailto:aowang@student.unimelb.edu.au)<br>
+
   
 ## Run Application
 > Make sure you have python 3.7 or higher correctly installed
